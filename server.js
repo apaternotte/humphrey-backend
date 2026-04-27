@@ -46,7 +46,7 @@ app.post('/api/claude', requireAuth, async (req, res) => {
     return res.status(400).json({ error: 'Invalid messages format' });
   }
   try {
-    const params = { model: 'claude-sonnet-4-20250514', max_tokens, system, messages };
+    const params = { model: 'claude-sonnet-4-6', max_tokens, system, messages };
     if (tools) params.tools = tools;
     const response = await anthropic.messages.create(params);
     res.json(response);

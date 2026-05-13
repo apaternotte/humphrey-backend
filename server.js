@@ -41,12 +41,13 @@ app.get('/health', (req, res) => res.json({ status: 'ok', app: 'Humphrey' }));
 
 // ─── ANTHROPIC PROXY ──────────────────────────────────────────────
 app.post('/api/claude', requireAuth, async (req, res) => {
-  const { system, messages, max_tokens = 3000, tools } = req.body;
+  const { system, messages, max_tokens = 4000, tools } = req.body;
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'Invalid messages format' });
   }
+  const cappedTokens = Math.min(max_tokens, 8000);
   try {
-    const params = { model: 'claude-sonnet-4-6', max_tokens, system, messages };
+    const params = { model: 'claude-sonnet-4-6', max_tokens: cappedTokens, system, messages };
     if (tools) params.tools = tools;
     const response = await anthropic.messages.create(params);
     res.json(response);
